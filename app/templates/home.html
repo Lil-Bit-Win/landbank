@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}Home - CSU KB & SOP System{% endblock %}
+{% block content %}
+    <h2>Welcome, {{ current_user.username }}</h2>
+    <p>Use the navigation above to manage troubleshooting knowledge articles and SOPs, or search across both.</p>
+
+    <div class="meta">
+        <strong>{{ count_kb }}</strong> Knowledge Base article(s) &middot;
+        <strong>{{ count_sop }}</strong> SOP(s) on file
+    </div>
+
+    <ul>
+        <li><a href="{{ url_for('kb.kb_list') }}">Knowledge Base</a> — troubleshooting articles (Telephone, Network, Router, ISP, etc.)</li>
+        <li><a href="{{ url_for('sop.sop_list') }}">SOPs</a> — Standard Operating Procedures</li>
+        <li><a href="{{ url_for('main.search') }}">Search</a> — search titles, descriptions, and tags across both</li>
+    </ul>
+{% endblock %}

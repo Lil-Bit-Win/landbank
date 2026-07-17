@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}{{ article.title }}{% endblock %}
+{% block content %}
+    <h2>{{ article.title }}</h2>
+    <div class="meta">
+        Category: {{ article.category }} &middot;
+        Created: {{ article.created_at.strftime('%Y-%m-%d %H:%M') if article.created_at else '' }}
+        {% if article.author %} by {{ article.author.username }}{% endif %}
+    </div>
+
+    <div class="section-block">
+        <h3>Problem Description</h3>
+        <p>{{ article.problem }}</p>
+    </div>
+
+    <div class="section-block">
+        <h3>Solution Steps</h3>
+        <pre class="procedure">{{ article.solution }}</pre>
+    </div>
+
+    <div class="section-block">
+        <h3>Tags</h3>
+        {% if article.tags %}
+            {% for t in article.tags.split(',') if t.strip() %}
+                <span class="tag">{{ t.strip() }}</span>
+            {% endfor %}
+        {% endif %}
+    </div>
+
+    <div class="actions">
+        {% if can_edit_kb() %}
+        <a class="btn" href="{{ url_for('kb.kb_edit', article_id=article.id) }}">Edit</a>
+        {% endif %}
+        {% if current_user.role == 'admin' %}
+        <form class="inline" method="post" action="{{ url_for('kb.kb_delete', article_id=article.id) }}" onsubmit="return confirm('Delete this article?');">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <button class="btn btn-danger" type="submit">Delete</button>
+        </form>
+        {% endif %}
+        <a class="btn btn-secondary" href="{{ url_for('kb.kb_list') }}">Back to List</a>
+    </div>
+{% endblock %}

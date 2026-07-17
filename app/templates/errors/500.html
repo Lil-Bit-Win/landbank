@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block title %}Something Went Wrong{% endblock %}
+{% block content %}
+    <h2>Something Went Wrong</h2>
+    <p>An unexpected error occurred on our end. It's been logged, and no changes were saved.</p>
+    <div class="actions">
+        <a class="btn" href="{{ url_for('main.home') }}">Back to Home</a>
+    </div>
+{% endblock %}

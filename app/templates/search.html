@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block title %}Search{% endblock %}
+{% block content %}
+    <h2>Search</h2>
+    <form class="search-box" method="get" action="{{ url_for('main.search') }}">
+        <input type="text" name="q" placeholder="Search titles, descriptions, tags..." value="{{ query }}">
+        <button class="btn" type="submit">Search</button>
+    </form>
+
+    {% if query %}
+        {% if not kb_results and not sop_results %}
+            <p style="margin-top:25px;">No results found.</p>
+        {% endif %}
+
+        <h3 style="margin-top:25px;">Knowledge Base Results ({{ kb_results|length }})</h3>
+        {% if kb_results %}
+        <table>
+            <thead>
+                <tr><th>Title</th><th>Category</th><th>Tags</th></tr>
+            </thead>
+            <tbody>
+                {% for a in kb_results %}
+                <tr>
+                    <td><a href="{{ url_for('kb.kb_view', article_id=a.id) }}">{{ a.title }}</a></td>
+                    <td>{{ a.category }}</td>
+                    <td>{{ a.tags }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+            <p>No matching knowledge base articles.</p>
+        {% endif %}
+
+        <h3 style="margin-top:25px;">SOP Results ({{ sop_results|length }})</h3>
+        {% if sop_results %}
+        <table>
+            <thead>
+                <tr><th>Title</th><th>Responsible Person</th></tr>
+            </thead>
+            <tbody>
+                {% for s in sop_results %}
+                <tr>
+                    <td><a href="{{ url_for('sop.sop_view', sop_id=s.id) }}">{{ s.title }}</a></td>
+                    <td>{{ s.responsible_person }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+            <p>No matching SOPs.</p>
+        {% endif %}
+    {% endif %}
+{% endblock %}

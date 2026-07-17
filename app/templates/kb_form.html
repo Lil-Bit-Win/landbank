@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block title %}{% if mode == 'new' %}Add Article{% else %}Edit Article{% endif %}{% endblock %}
+{% block content %}
+    <h2>{% if mode == 'new' %}Add New Knowledge Base Article{% else %}Edit Knowledge Base Article{% endif %}</h2>
+
+    <form method="post">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+        <label for="title">Title *</label>
+        <input type="text" id="title" name="title" required value="{{ article.title if article else '' }}">
+
+        <label for="category">Category *</label>
+        <select id="category" name="category" required>
+            {% set current_category = article.category if article else '' %}
+            {% for c in ['Telephone', 'Network', 'Router', 'ISP', 'Other'] %}
+                <option value="{{ c }}" {% if current_category == c %}selected{% endif %}>{{ c }}</option>
+            {% endfor %}
+        </select>
+
+        <label for="problem">Problem Description *</label>
+        <textarea id="problem" name="problem" rows="4" required>{{ article.problem if article else '' }}</textarea>
+
+        <label for="solution">Solution Steps *</label>
+        <textarea id="solution" name="solution" rows="8" required>{{ article.solution if article else '' }}</textarea>
+
+        <label for="tags">Tags (comma-separated)</label>
+        <input type="text" id="tags" name="tags" value="{{ article.tags if article else '' }}">
+
+        <div class="actions">
+            <button class="btn" type="submit">Save</button>
+            <a class="btn btn-secondary" href="{{ url_for('kb.kb_list') }}">Cancel</a>
+        </div>
+    </form>
+{% endblock %}

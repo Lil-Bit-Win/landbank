@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block title %}Access Denied{% endblock %}
+{% block content %}
+    <h2>Access Denied</h2>
+    <p>Your account doesn't have permission to view this page or perform this action.</p>
+    <div class="actions">
+        <a class="btn" href="{{ url_for('main.home') }}">Back to Home</a>
+    </div>
+{% endblock %}

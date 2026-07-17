@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}{% if mode == 'new' %}Add SOP{% else %}Edit SOP{% endif %}{% endblock %}
+{% block content %}
+    <h2>{% if mode == 'new' %}Add New SOP{% else %}Edit SOP{% endif %}</h2>
+
+    <form method="post">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+        <label for="title">Title *</label>
+        <input type="text" id="title" name="title" required value="{{ sop.title if sop else '' }}">
+
+        <label for="purpose">Purpose *</label>
+        <textarea id="purpose" name="purpose" rows="3" required>{{ sop.purpose if sop else '' }}</textarea>
+
+        <label for="scope">Scope *</label>
+        <textarea id="scope" name="scope" rows="3" required>{{ sop.scope if sop else '' }}</textarea>
+
+        <label for="procedure">Step-by-step Procedure *</label>
+        <textarea id="procedure" name="procedure" rows="8" required>{{ sop.procedure if sop else '' }}</textarea>
+
+        <label for="responsible_person">Responsible Person *</label>
+        <input type="text" id="responsible_person" name="responsible_person" required value="{{ sop.responsible_person if sop else '' }}">
+
+        <div class="actions">
+            <button class="btn" type="submit">Save</button>
+            <a class="btn btn-secondary" href="{{ url_for('sop.sop_list') }}">Cancel</a>
+        </div>
+    </form>
+{% endblock %}
