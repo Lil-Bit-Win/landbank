@@ -1,70 +1,113 @@
 {% extends "base.html" %}
-{% block title %}Knowledge Base{% endblock %}
+{% block title %}Knowledge Base — CSU Knowledge Base & SOP System{% endblock %}
 {% block content %}
-    <h2>Knowledge Base Articles</h2>
-    {% if can_edit_kb() %}
-    <div class="actions">
-        <a class="btn" href="{{ url_for('kb.kb_new') }}">+ Add New Article</a>
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+        <div>
+            <h1 class="text-xl font-bold text-lb-text">Knowledge Base</h1>
+            <p class="text-sm text-lb-muted mt-1">Troubleshooting articles for common issues.</p>
+        </div>
+        {% if can_edit_kb() %}
+        <a href="{{ url_for('kb.kb_new') }}" class="lb-btn lb-btn-primary self-start sm:self-auto">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path d="M10.75 4.75a.75.75 0 00-1.5 0v4.5h-4.5a.75.75 0 000 1.5h4.5v4.5a.75.75 0 001.5 0v-4.5h4.5a.75.75 0 000-1.5h-4.5v-4.5z"/></svg>
+            Add New Article
+        </a>
+        {% endif %}
     </div>
-    {% endif %}
 
-    <form method="get" action="{{ url_for('kb.kb_list') }}" style="margin-top:15px;">
-        <label for="category">Filter by Category</label>
-        <select id="category" name="category" onchange="this.form.submit()">
-            <option value="">All Categories</option>
-            {% for c in ['Telephone', 'Network', 'Router', 'ISP', 'Other'] %}
-                <option value="{{ c }}" {% if selected_category == c %}selected{% endif %}>{{ c }}</option>
-            {% endfor %}
-        </select>
-    </form>
+    <div class="lb-card p-4 sm:p-5 mb-5">
+        <form method="get" action="{{ url_for('kb.kb_list') }}" class="flex flex-col sm:flex-row sm:items-end gap-3">
+            <div class="sm:w-64">
+                <label class="lb-label" for="category">Category</label>
+                <select class="lb-select" id="category" name="category" onchange="this.form.submit()">
+                    <option value="">All categories</option>
+                    {% for c in ['Telephone', 'Network', 'Router', 'ISP', 'Other'] %}
+                        <option value="{{ c }}" {{ 'selected' if selected_category == c }}>{{ c }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <noscript><button class="lb-btn lb-btn-secondary" type="submit">Filter</button></noscript>
+        </form>
+    </div>
 
     {% if articles %}
-    <table>
-        <thead>
-            <tr>
-                <th>Title</th>
-                <th>Category</th>
-                <th>Tags</th>
-                <th>Date Created</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
+    <div class="lb-card overflow-hidden">
+        {# ---- Table (sm and up) ---- #}
+        <div class="hidden sm:block overflow-x-auto">
+            <table class="lb-table">
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Category</th>
+                        <th>Tags</th>
+                        <th>Date created</th>
+                        <th class="text-right">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for a in articles %}
+                    <tr>
+                        <td><a class="font-medium text-lb-darker hover:underline" href="{{ url_for('kb.kb_view', article_id=a.id) }}">{{ a.title }}</a></td>
+                        <td><span class="lb-tag">{{ a.category }}</span></td>
+                        <td class="text-lb-muted">{{ a.tags or '—' }}</td>
+                        <td class="text-lb-muted whitespace-nowrap">{{ a.created_at.strftime('%Y-%m-%d %H:%M') if a.created_at else '' }}</td>
+                        <td class="text-right whitespace-nowrap">
+                            {% if can_edit_kb() %}
+                            <a class="lb-btn lb-btn-secondary" href="{{ url_for('kb.kb_edit', article_id=a.id) }}">Edit</a>
+                            {% endif %}
+                            {% if current_user.role == 'admin' %}
+                            <form class="inline" method="post" action="{{ url_for('kb.kb_delete', article_id=a.id) }}" onsubmit="return confirm('Delete this article?');">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                <button class="lb-btn lb-btn-danger" type="submit">Delete</button>
+                            </form>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        {# ---- Cards (mobile) ---- #}
+        <div class="sm:hidden divide-y divide-lb-border">
             {% for a in articles %}
-            <tr>
-                <td><a href="{{ url_for('kb.kb_view', article_id=a.id) }}">{{ a.title }}</a></td>
-                <td>{{ a.category }}</td>
-                <td>{{ a.tags }}</td>
-                <td>{{ a.created_at.strftime('%Y-%m-%d %H:%M') if a.created_at else '' }}</td>
-                <td>
+            <div class="p-4">
+                <a class="font-medium text-lb-darker hover:underline block" href="{{ url_for('kb.kb_view', article_id=a.id) }}">{{ a.title }}</a>
+                <div class="flex items-center gap-2 mt-2">
+                    <span class="lb-tag">{{ a.category }}</span>
+                    <span class="text-xs text-lb-muted">{{ a.created_at.strftime('%Y-%m-%d') if a.created_at else '' }}</span>
+                </div>
+                <div class="flex gap-2 mt-3">
                     {% if can_edit_kb() %}
-                    <a class="btn" href="{{ url_for('kb.kb_edit', article_id=a.id) }}">Edit</a>
+                    <a class="lb-btn lb-btn-secondary" href="{{ url_for('kb.kb_edit', article_id=a.id) }}">Edit</a>
                     {% endif %}
                     {% if current_user.role == 'admin' %}
                     <form class="inline" method="post" action="{{ url_for('kb.kb_delete', article_id=a.id) }}" onsubmit="return confirm('Delete this article?');">
                         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                        <button class="btn btn-danger" type="submit">Delete</button>
+                        <button class="lb-btn lb-btn-danger" type="submit">Delete</button>
                     </form>
                     {% endif %}
-                </td>
-            </tr>
+                </div>
+            </div>
             {% endfor %}
-        </tbody>
-    </table>
+        </div>
+    </div>
 
     {% if pagination and pagination.pages > 1 %}
-    <div class="actions">
+    <div class="flex items-center justify-between mt-5">
         {% if pagination.has_prev %}
-            <a class="btn btn-secondary" href="{{ url_for('kb.kb_list', page=pagination.prev_num, category=selected_category) }}">&laquo; Prev</a>
-        {% endif %}
-        <span class="meta" style="display:inline-block; margin: 0 8px;">Page {{ pagination.page }} of {{ pagination.pages }}</span>
+            <a class="lb-btn lb-btn-secondary" href="{{ url_for('kb.kb_list', page=pagination.prev_num, category=selected_category) }}">&laquo; Prev</a>
+        {% else %}<span></span>{% endif %}
+        <span class="text-sm text-lb-muted">Page {{ pagination.page }} of {{ pagination.pages }}</span>
         {% if pagination.has_next %}
-            <a class="btn btn-secondary" href="{{ url_for('kb.kb_list', page=pagination.next_num, category=selected_category) }}">Next &raquo;</a>
-        {% endif %}
+            <a class="lb-btn lb-btn-secondary" href="{{ url_for('kb.kb_list', page=pagination.next_num, category=selected_category) }}">Next &raquo;</a>
+        {% else %}<span></span>{% endif %}
     </div>
     {% endif %}
 
     {% else %}
-        <p>No articles yet.{% if can_edit_kb() %} Click "Add New Article" to create one.{% endif %}</p>
+    <div class="lb-card p-10 text-center">
+        <p class="text-lb-text font-medium">No articles yet</p>
+        <p class="text-sm text-lb-muted mt-1">{% if can_edit_kb() %}Click "Add New Article" to create the first one.{% else %}Check back later, or try a different category filter.{% endif %}</p>
+    </div>
     {% endif %}
 {% endblock %}

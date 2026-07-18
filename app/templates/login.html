@@ -1,18 +1,43 @@
 {% extends "base.html" %}
-{% block title %}Login{% endblock %}
-{% block content %}
-    <h2>Login</h2>
-    <form method="post">
-        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-
-        <label for="username">Username</label>
-        <input type="text" id="username" name="username" required autofocus>
-
-        <label for="password">Password</label>
-        <input type="password" id="password" name="password" required>
-
-        <div class="actions">
-            <button class="btn" type="submit">Log In</button>
+{% block title %}Sign in — CSU Knowledge Base & SOP System{% endblock %}
+{% block guest_content %}
+    <div class="lb-card p-7 sm:p-8">
+        <div class="mb-6 text-center">
+            <h1 class="text-xl font-bold text-lb-text">Sign in</h1>
+            <p class="text-sm text-lb-muted mt-1">CSU Knowledge Base &amp; SOP System</p>
         </div>
-    </form>
+
+        <form method="post" novalidate id="lb-login-form">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+            <div class="mb-4">
+                <label class="lb-label" for="username">Username</label>
+                <input class="lb-input" type="text" id="username" name="username" required autofocus autocomplete="username">
+            </div>
+
+            <div class="mb-2">
+                <label class="lb-label" for="password">Password</label>
+                <input class="lb-input" type="password" id="password" name="password" required autocomplete="current-password">
+            </div>
+
+            <button class="lb-btn lb-btn-primary w-full justify-center mt-5" type="submit" id="lb-login-submit">
+                <span id="lb-login-label">Log in</span>
+            </button>
+        </form>
+    </div>
+    <p class="text-center text-xs text-lb-muted mt-5">
+        Trouble signing in? Contact your system administrator.
+    </p>
+{% endblock %}
+{% block scripts %}
+<script>
+    // Basic loading state — the request cycle itself is server-rendered,
+    // this just gives immediate feedback that the click registered.
+    document.getElementById('lb-login-form').addEventListener('submit', function () {
+        const btn = document.getElementById('lb-login-submit');
+        const label = document.getElementById('lb-login-label');
+        btn.setAttribute('aria-disabled', 'true');
+        label.innerHTML = '<span class="lb-spinner"></span> Signing in\u2026';
+    });
+</script>
 {% endblock %}

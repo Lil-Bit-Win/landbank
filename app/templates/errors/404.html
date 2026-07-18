@@ -1,9 +1,20 @@
 {% extends "base.html" %}
-{% block title %}Not Found{% endblock %}
-{% block content %}
-    <h2>Page Not Found</h2>
-    <p>The page or record you're looking for doesn't exist or may have been removed.</p>
-    <div class="actions">
-        <a class="btn" href="{{ url_for('main.home') }}">Back to Home</a>
+{% block title %}Page Not Found{% endblock %}
+{% macro body() %}
+    <div class="lb-card p-8 sm:p-10 text-center max-w-lg mx-auto">
+        <div class="mx-auto h-14 w-14 rounded-full bg-lb-50 text-lb-darker flex items-center justify-center mb-4">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M9 3.5a5.5 5.5 0 100 11 5.5 5.5 0 000-11zM2 9a7 7 0 1112.452 4.391l3.328 3.329a.75.75 0 11-1.06 1.06l-3.329-3.328A7 7 0 012 9z" clip-rule="evenodd"/>
+            </svg>
+        </div>
+        <h1 class="text-lg font-bold text-lb-text">Page not found</h1>
+        <p class="text-sm text-lb-muted mt-2">The page or record you're looking for doesn't exist or may have been removed.</p>
+        <div class="mt-6">
+            <a class="lb-btn lb-btn-primary" href="{{ url_for('main.home') if current_user.is_authenticated else url_for('auth.login') }}">
+                {{ 'Back to dashboard' if current_user.is_authenticated else 'Back to sign in' }}
+            </a>
+        </div>
     </div>
-{% endblock %}
+{% endmacro %}
+{% block content %}{{ body() }}{% endblock %}
+{% block guest_content %}{{ body() }}{% endblock %}

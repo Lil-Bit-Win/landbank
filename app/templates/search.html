@@ -1,54 +1,73 @@
 {% extends "base.html" %}
-{% block title %}Search{% endblock %}
+{% block title %}Search — CSU Knowledge Base & SOP System{% endblock %}
 {% block content %}
-    <h2>Search</h2>
-    <form class="search-box" method="get" action="{{ url_for('main.search') }}">
-        <input type="text" name="q" placeholder="Search titles, descriptions, tags..." value="{{ query }}">
-        <button class="btn" type="submit">Search</button>
+    <h1 class="text-xl font-bold text-lb-text mb-1">Search</h1>
+    <p class="text-sm text-lb-muted mb-5">Search titles, descriptions, and tags across Knowledge Base articles and SOPs.</p>
+
+    <form method="get" action="{{ url_for('main.search') }}" class="flex gap-2 mb-8" id="lb-search-form">
+        <div class="relative flex-1">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-lb-muted absolute left-3 top-1/2 -translate-y-1/2" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M9 3.5a5.5 5.5 0 100 11 5.5 5.5 0 000-11zM2 9a7 7 0 1112.452 4.391l3.328 3.329a.75.75 0 11-1.06 1.06l-3.329-3.328A7 7 0 012 9z" clip-rule="evenodd"/>
+            </svg>
+            <input class="lb-input pl-9" type="text" name="q" placeholder="Search titles, descriptions, tags…" value="{{ query }}" autofocus>
+        </div>
+        <button class="lb-btn lb-btn-primary" type="submit" id="lb-search-submit">
+            <span id="lb-search-label">Search</span>
+        </button>
     </form>
 
     {% if query %}
         {% if not kb_results and not sop_results %}
-            <p style="margin-top:25px;">No results found.</p>
+        <div class="lb-card p-10 text-center mb-6">
+            <p class="text-lb-text font-medium">No results for "{{ query }}"</p>
+            <p class="text-sm text-lb-muted mt-1">Try a different keyword, or check the spelling.</p>
+        </div>
         {% endif %}
 
-        <h3 style="margin-top:25px;">Knowledge Base Results ({{ kb_results|length }})</h3>
-        {% if kb_results %}
-        <table>
-            <thead>
-                <tr><th>Title</th><th>Category</th><th>Tags</th></tr>
-            </thead>
-            <tbody>
+        <div class="mb-8">
+            <h2 class="text-sm font-semibold text-lb-darker mb-3">Knowledge Base results ({{ kb_results|length }})</h2>
+            {% if kb_results %}
+            <div class="lb-card divide-y divide-lb-border overflow-hidden">
                 {% for a in kb_results %}
-                <tr>
-                    <td><a href="{{ url_for('kb.kb_view', article_id=a.id) }}">{{ a.title }}</a></td>
-                    <td>{{ a.category }}</td>
-                    <td>{{ a.tags }}</td>
-                </tr>
+                <a href="{{ url_for('kb.kb_view', article_id=a.id) }}" class="flex items-center justify-between gap-3 p-4 hover:bg-lb-50">
+                    <div class="min-w-0">
+                        <p class="font-medium text-lb-text truncate">{{ a.title }}</p>
+                        <p class="text-xs text-lb-muted mt-0.5">{{ a.tags or '—' }}</p>
+                    </div>
+                    <span class="lb-tag shrink-0">{{ a.category }}</span>
+                </a>
                 {% endfor %}
-            </tbody>
-        </table>
-        {% else %}
-            <p>No matching knowledge base articles.</p>
-        {% endif %}
+            </div>
+            {% else %}
+            <p class="text-sm text-lb-muted">No matching Knowledge Base articles.</p>
+            {% endif %}
+        </div>
 
-        <h3 style="margin-top:25px;">SOP Results ({{ sop_results|length }})</h3>
-        {% if sop_results %}
-        <table>
-            <thead>
-                <tr><th>Title</th><th>Responsible Person</th></tr>
-            </thead>
-            <tbody>
+        <div>
+            <h2 class="text-sm font-semibold text-lb-darker mb-3">SOP results ({{ sop_results|length }})</h2>
+            {% if sop_results %}
+            <div class="lb-card divide-y divide-lb-border overflow-hidden">
                 {% for s in sop_results %}
-                <tr>
-                    <td><a href="{{ url_for('sop.sop_view', sop_id=s.id) }}">{{ s.title }}</a></td>
-                    <td>{{ s.responsible_person }}</td>
-                </tr>
+                <a href="{{ url_for('sop.sop_view', sop_id=s.id) }}" class="flex items-center justify-between gap-3 p-4 hover:bg-lb-50">
+                    <div class="min-w-0">
+                        <p class="font-medium text-lb-text truncate">{{ s.title }}</p>
+                        <p class="text-xs text-lb-muted mt-0.5">{{ s.responsible_person }}</p>
+                    </div>
+                    <span class="lb-tag shrink-0">v{{ s.version }}</span>
+                </a>
                 {% endfor %}
-            </tbody>
-        </table>
-        {% else %}
-            <p>No matching SOPs.</p>
-        {% endif %}
+            </div>
+            {% else %}
+            <p class="text-sm text-lb-muted">No matching SOPs.</p>
+            {% endif %}
+        </div>
     {% endif %}
+{% endblock %}
+{% block scripts %}
+<script>
+    document.getElementById('lb-search-form').addEventListener('submit', function () {
+        const label = document.getElementById('lb-search-label');
+        label.innerHTML = '<span class="lb-spinner"></span> Searching\u2026';
+    });
+</script>
 {% endblock %}

@@ -1,17 +1,55 @@
 {% extends "base.html" %}
-{% block title %}Home - CSU KB & SOP System{% endblock %}
+{% block title %}Dashboard — CSU Knowledge Base & SOP System{% endblock %}
 {% block content %}
-    <h2>Welcome, {{ current_user.username }}</h2>
-    <p>Use the navigation above to manage troubleshooting knowledge articles and SOPs, or search across both.</p>
-
-    <div class="meta">
-        <strong>{{ count_kb }}</strong> Knowledge Base article(s) &middot;
-        <strong>{{ count_sop }}</strong> SOP(s) on file
+    <div class="mb-6">
+        <h1 class="text-xl font-bold text-lb-text">Welcome, {{ current_user.username }}</h1>
+        <p class="text-sm text-lb-muted mt-1">Manage troubleshooting knowledge articles and SOPs, or search across both.</p>
     </div>
 
-    <ul>
-        <li><a href="{{ url_for('kb.kb_list') }}">Knowledge Base</a> — troubleshooting articles (Telephone, Network, Router, ISP, etc.)</li>
-        <li><a href="{{ url_for('sop.sop_list') }}">SOPs</a> — Standard Operating Procedures</li>
-        <li><a href="{{ url_for('main.search') }}">Search</a> — search titles, descriptions, and tags across both</li>
-    </ul>
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
+        <div class="lb-card p-5 flex items-center gap-4">
+            <div class="h-11 w-11 rounded-lg bg-lb-50 text-lb-darker flex items-center justify-center shrink-0">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path d="M9.25 2.5a.75.75 0 01.75.75V4h4A2.25 2.25 0 0116.25 6.25v8.5A2.25 2.25 0 0114 17H6a2.25 2.25 0 01-2.25-2.25v-8.5A2.25 2.25 0 016 4h2.5V3.25a.75.75 0 01.75-.75zM6 5.5a.75.75 0 00-.75.75v8.5c0 .414.336.75.75.75h8a.75.75 0 00.75-.75v-8.5a.75.75 0 00-.75-.75H6z"/>
+                </svg>
+            </div>
+            <div>
+                <p class="text-2xl font-bold text-lb-text leading-none">{{ count_kb }}</p>
+                <p class="text-sm text-lb-muted mt-1">Knowledge Base article{{ 's' if count_kb != 1 else '' }}</p>
+            </div>
+        </div>
+
+        <div class="lb-card p-5 flex items-center gap-4">
+            <div class="h-11 w-11 rounded-lg bg-lb-50 text-lb-darker flex items-center justify-center shrink-0">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h5.172a2 2 0 011.414.586l2.828 2.828A2 2 0 0116 6.828V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm7 1a1 1 0 00-1 1v1a1 1 0 001 1h3a1 1 0 100-2h-.5V5a1 1 0 00-1-1H11z" clip-rule="evenodd"/>
+                </svg>
+            </div>
+            <div>
+                <p class="text-2xl font-bold text-lb-text leading-none">{{ count_sop }}</p>
+                <p class="text-sm text-lb-muted mt-1">SOP{{ 's' if count_sop != 1 else '' }} on file</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="lb-card p-5 sm:p-6">
+        <h2 class="text-sm font-semibold text-lb-text mb-4">Quick actions</h2>
+        <div class="flex flex-wrap gap-3">
+            {% if can_edit_kb() %}
+            <a href="{{ url_for('kb.kb_new') }}" class="lb-btn lb-btn-primary">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path d="M10.75 4.75a.75.75 0 00-1.5 0v4.5h-4.5a.75.75 0 000 1.5h4.5v4.5a.75.75 0 001.5 0v-4.5h4.5a.75.75 0 000-1.5h-4.5v-4.5z"/></svg>
+                New Knowledge Base Article
+            </a>
+            {% endif %}
+            {% if current_user.role == 'admin' %}
+            <a href="{{ url_for('sop.sop_new') }}" class="lb-btn lb-btn-secondary">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path d="M10.75 4.75a.75.75 0 00-1.5 0v4.5h-4.5a.75.75 0 000 1.5h4.5v4.5a.75.75 0 001.5 0v-4.5h4.5a.75.75 0 000-1.5h-4.5v-4.5z"/></svg>
+                New SOP
+            </a>
+            {% endif %}
+            <a href="{{ url_for('kb.kb_list') }}" class="lb-btn lb-btn-secondary">Browse Knowledge Base</a>
+            <a href="{{ url_for('sop.sop_list') }}" class="lb-btn lb-btn-secondary">Browse SOPs</a>
+            <a href="{{ url_for('main.search') }}" class="lb-btn lb-btn-ghost">Search everything</a>
+        </div>
+    </div>
 {% endblock %}

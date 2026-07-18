@@ -1,0 +1,252 @@
+/* ==========================================================================
+   CSU Knowledge Base & SOP System — LandBank visual identity
+   Design tokens live here (and are mirrored into the Tailwind CDN config
+   in base.html) so every hand-written component class below stays in
+   sync with the utility classes used throughout the templates.
+   ========================================================================== */
+
+:root {
+  --lb-green: #6FB43F;       /* primary — sampled from the LandBank mark */
+  --lb-green-dark: #4C8A2C;  /* secondary — hover/active states */
+  --lb-green-darker: #35611F;/* deepest accent — text-on-light emphasis */
+  --lb-green-50: #F1F8EC;    /* tint — badges, selected rows */
+  --lb-green-100: #E2F1D8;
+  --lb-bg: #F5F7F4;          /* app background */
+  --lb-surface: #FFFFFF;
+  --lb-border: #E3E8E1;
+  --lb-text: #232823;        /* body text */
+  --lb-text-muted: #64706A;
+  --lb-danger: #B3372C;
+  --lb-danger-dark: #8F2B22;
+  --lb-warning: #92620A;
+  --lb-warning-bg: #FBF1DC;
+  --lb-warning-border: #F0D9A6;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  background-color: var(--lb-bg);
+  color: var(--lb-text);
+}
+
+/* Focus visibility (accessibility floor — never remove outlines outright) */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid var(--lb-green-dark);
+  outline-offset: 2px;
+}
+
+/* ---- Cards ---- */
+.lb-card {
+  background: var(--lb-surface);
+  border: 1px solid var(--lb-border);
+  border-radius: 10px;
+  box-shadow: 0 1px 2px rgba(35, 40, 35, 0.04), 0 1px 6px rgba(35, 40, 35, 0.04);
+}
+
+/* ---- Buttons ---- */
+.lb-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.5rem 1rem;
+  border-radius: 7px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  line-height: 1.25rem;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: background-color .15s ease, border-color .15s ease, color .15s ease;
+  white-space: nowrap;
+}
+.lb-btn-primary {
+  background-color: var(--lb-green-dark);
+  color: #fff;
+}
+.lb-btn-primary:hover { background-color: var(--lb-green-darker); }
+
+.lb-btn-secondary {
+  background-color: var(--lb-surface);
+  color: var(--lb-text);
+  border-color: var(--lb-border);
+}
+.lb-btn-secondary:hover { background-color: var(--lb-bg); }
+
+.lb-btn-danger {
+  background-color: var(--lb-danger);
+  color: #fff;
+}
+.lb-btn-danger:hover { background-color: var(--lb-danger-dark); }
+
+.lb-btn-ghost {
+  background-color: transparent;
+  color: var(--lb-text-muted);
+  border-color: transparent;
+}
+.lb-btn-ghost:hover { background-color: var(--lb-bg); color: var(--lb-text); }
+
+.lb-btn:disabled,
+.lb-btn[aria-disabled="true"] {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+/* ---- Form fields ---- */
+.lb-label {
+  display: block;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--lb-text);
+  margin-bottom: 0.3rem;
+}
+.lb-input,
+.lb-select,
+.lb-textarea {
+  width: 100%;
+  padding: 0.55rem 0.7rem;
+  border: 1px solid var(--lb-border);
+  border-radius: 7px;
+  background-color: var(--lb-surface);
+  font-size: 0.9rem;
+  color: var(--lb-text);
+  font-family: inherit;
+}
+.lb-input:focus,
+.lb-select:focus,
+.lb-textarea:focus {
+  outline: none;
+  border-color: var(--lb-green-dark);
+  box-shadow: 0 0 0 3px var(--lb-green-50);
+}
+.lb-textarea { resize: vertical; }
+.lb-field-error {
+  color: var(--lb-danger);
+  font-size: 0.8125rem;
+  margin-top: 0.25rem;
+}
+
+/* ---- Sidebar nav item ---- */
+.lb-nav-link {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.55rem 0.85rem;
+  border-radius: 7px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #E7F0E1;
+  transition: background-color .15s ease, color .15s ease;
+}
+.lb-nav-link:hover { background-color: rgba(255,255,255,0.08); color: #fff; }
+.lb-nav-link.is-active {
+  background-color: rgba(255,255,255,0.14);
+  color: #fff;
+}
+
+/* ---- Badges / tags ---- */
+.lb-tag {
+  display: inline-block;
+  background: var(--lb-green-50);
+  color: var(--lb-green-darker);
+  border: 1px solid var(--lb-green-100);
+  border-radius: 999px;
+  padding: 0.15rem 0.65rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  margin: 0 0.25rem 0.25rem 0;
+}
+.lb-pill {
+  display: inline-block;
+  border-radius: 999px;
+  padding: 0.15rem 0.6rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+.lb-pill-admin { background: #E9F1FB; color: #1D4E89; }
+.lb-pill-agent { background: var(--lb-green-50); color: var(--lb-green-darker); }
+
+/* ---- Alerts / flash messages ---- */
+.lb-alert {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  padding: 0.7rem 0.9rem;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  border: 1px solid var(--lb-warning-border);
+  background-color: var(--lb-warning-bg);
+  color: var(--lb-warning);
+}
+
+/* ---- Table ---- */
+.lb-table { width: 100%; border-collapse: collapse; font-size: 0.875rem; }
+.lb-table th {
+  text-align: left;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--lb-text-muted);
+  padding: 0.65rem 0.9rem;
+  border-bottom: 1px solid var(--lb-border);
+  background: var(--lb-bg);
+}
+.lb-table td {
+  padding: 0.75rem 0.9rem;
+  border-bottom: 1px solid var(--lb-border);
+  vertical-align: top;
+  color: var(--lb-text);
+}
+.lb-table tr:last-child td { border-bottom: none; }
+.lb-table tbody tr:hover { background-color: var(--lb-green-50); }
+
+/* ---- Procedure / code-like block ---- */
+.lb-pre {
+  white-space: pre-wrap;
+  font-family: inherit;
+  background: var(--lb-bg);
+  border: 1px solid var(--lb-border);
+  border-radius: 8px;
+  padding: 0.9rem 1rem;
+  color: var(--lb-text);
+  line-height: 1.55;
+}
+
+/* ---- Loading spinner (used for basic loading states) ---- */
+.lb-spinner {
+  width: 1rem;
+  height: 1rem;
+  border-radius: 50%;
+  border: 2px solid rgba(255,255,255,0.4);
+  border-top-color: #fff;
+  animation: lb-spin 0.7s linear infinite;
+  display: inline-block;
+}
+@keyframes lb-spin { to { transform: rotate(360deg); } }
+
+/* ---- Mobile sidebar drawer ---- */
+#lb-sidebar {
+  transition: transform .2s ease;
+}
+@media (max-width: 1023px) {
+  #lb-sidebar {
+    position: fixed;
+    inset: 0 auto 0 0;
+    z-index: 40;
+    transform: translateX(-100%);
+  }
+  #lb-sidebar.lb-open { transform: translateX(0); }
+  #lb-sidebar-backdrop {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(20, 24, 20, 0.45);
+    z-index: 30;
+  }
+  #lb-sidebar-backdrop.lb-open { display: block; }
+}

@@ -1,34 +1,56 @@
 {% extends "base.html" %}
-{% block title %}{% if mode == 'new' %}Add Article{% else %}Edit Article{% endif %}{% endblock %}
+{% block title %}{% if mode == 'new' %}New Article{% else %}Edit Article{% endif %} — Knowledge Base{% endblock %}
 {% block content %}
-    <h2>{% if mode == 'new' %}Add New Knowledge Base Article{% else %}Edit Knowledge Base Article{% endif %}</h2>
+    <a href="{{ url_for('kb.kb_list') }}" class="inline-flex items-center gap-1 text-sm text-lb-muted hover:text-lb-text mb-4">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M12.79 5.23a.75.75 0 010 1.06L9.06 10l3.73 3.71a.75.75 0 11-1.06 1.06l-4.25-4.25a.75.75 0 010-1.06l4.25-4.25a.75.75 0 011.06 0z" clip-rule="evenodd"/></svg>
+        Back to Knowledge Base
+    </a>
 
-    <form method="post">
-        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <div class="lb-card p-6 sm:p-8 max-w-2xl">
+        <h1 class="text-xl font-bold text-lb-text mb-6">
+            {% if mode == 'new' %}Add new Knowledge Base article{% else %}Edit Knowledge Base article{% endif %}
+        </h1>
 
-        <label for="title">Title *</label>
-        <input type="text" id="title" name="title" required value="{{ article.title if article else '' }}">
+        <form method="post" novalidate>
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 
-        <label for="category">Category *</label>
-        <select id="category" name="category" required>
-            {% set current_category = article.category if article else '' %}
-            {% for c in ['Telephone', 'Network', 'Router', 'ISP', 'Other'] %}
-                <option value="{{ c }}" {% if current_category == c %}selected{% endif %}>{{ c }}</option>
-            {% endfor %}
-        </select>
+            <div class="mb-4">
+                <label class="lb-label" for="title">Title <span class="text-lb-danger">*</span></label>
+                <input class="lb-input" type="text" id="title" name="title" required maxlength="200"
+                       value="{{ article.title if article else '' }}">
+            </div>
 
-        <label for="problem">Problem Description *</label>
-        <textarea id="problem" name="problem" rows="4" required>{{ article.problem if article else '' }}</textarea>
+            <div class="mb-4">
+                <label class="lb-label" for="category">Category <span class="text-lb-danger">*</span></label>
+                {% set current_category = article.category if article else '' %}
+                <select class="lb-select" id="category" name="category" required>
+                    <option value="" disabled {{ 'selected' if not current_category }}>Select a category…</option>
+                    {% for c in ['Telephone', 'Network', 'Router', 'ISP', 'Other'] %}
+                        <option value="{{ c }}" {{ 'selected' if current_category == c }}>{{ c }}</option>
+                    {% endfor %}
+                </select>
+            </div>
 
-        <label for="solution">Solution Steps *</label>
-        <textarea id="solution" name="solution" rows="8" required>{{ article.solution if article else '' }}</textarea>
+            <div class="mb-4">
+                <label class="lb-label" for="problem">Problem description <span class="text-lb-danger">*</span></label>
+                <textarea class="lb-textarea" id="problem" name="problem" rows="4" required maxlength="5000">{{ article.problem if article else '' }}</textarea>
+            </div>
 
-        <label for="tags">Tags (comma-separated)</label>
-        <input type="text" id="tags" name="tags" value="{{ article.tags if article else '' }}">
+            <div class="mb-4">
+                <label class="lb-label" for="solution">Solution steps <span class="text-lb-danger">*</span></label>
+                <textarea class="lb-textarea" id="solution" name="solution" rows="8" required maxlength="5000">{{ article.solution if article else '' }}</textarea>
+            </div>
 
-        <div class="actions">
-            <button class="btn" type="submit">Save</button>
-            <a class="btn btn-secondary" href="{{ url_for('kb.kb_list') }}">Cancel</a>
-        </div>
-    </form>
+            <div class="mb-2">
+                <label class="lb-label" for="tags">Tags <span class="text-lb-muted font-normal">(comma-separated)</span></label>
+                <input class="lb-input" type="text" id="tags" name="tags" maxlength="255"
+                       value="{{ article.tags if article else '' }}" placeholder="e.g. router, wifi, timeout">
+            </div>
+
+            <div class="flex gap-3 mt-7 pt-6 border-t border-lb-border">
+                <button class="lb-btn lb-btn-primary" type="submit">Save article</button>
+                <a class="lb-btn lb-btn-secondary" href="{{ url_for('kb.kb_list') }}">Cancel</a>
+            </div>
+        </form>
+    </div>
 {% endblock %}

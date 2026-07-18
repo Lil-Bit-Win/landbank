@@ -33,6 +33,32 @@ def create_app(config_class=Config):
     login_manager.login_view = "auth.login"
     login_manager.login_message = "Please log in to access this page."
 
+
+        # --- AUTO DATABASE SETUP + DEFAULT USERS (FREE PLAN FIX) ---
+    import os
+    from app.models.user import User
+
+    with app.app_context():
+        try:
+            db.create_all()
+
+            if not User.query.filter_by(username="admin").first():
+                admin = User(username="admin", role="admin")
+                admin.set_password(os.environ.get("SEED_ADMIN_PASSWORD", "admin123"))
+                db.session.add(admin)
+
+            if not User.query.filter_by(username="agent").first():
+                agent = User(username="agent", role="agent")
+                agent.set_password(os.environ.get("SEED_AGENT_PASSWORD", "agent123"))
+                db.session.add(agent)
+
+            db.session.commit()
+            app.logger.info("✅ Default users ensured")
+
+        except Exception as e:
+            app.logger.error(f"❌ Error creating default users: {e}")    
+
+
     # FIX 3: models must be imported here (even though unused directly)
     # so Flask-Migrate's autogenerate can see them via db.metadata when
     # `flask db migrate` introspects the models.

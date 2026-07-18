@@ -1,9 +1,20 @@
 {% extends "base.html" %}
 {% block title %}Something Went Wrong{% endblock %}
-{% block content %}
-    <h2>Something Went Wrong</h2>
-    <p>An unexpected error occurred on our end. It's been logged, and no changes were saved.</p>
-    <div class="actions">
-        <a class="btn" href="{{ url_for('main.home') }}">Back to Home</a>
+{% macro body() %}
+    <div class="lb-card p-8 sm:p-10 text-center max-w-lg mx-auto">
+        <div class="mx-auto h-14 w-14 rounded-full bg-lb-warning-bg text-lb-warning flex items-center justify-center mb-4">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M8.485 2.495c.673-1.167 2.357-1.167 3.03 0l6.28 10.875c.673 1.167-.17 2.625-1.516 2.625H3.72c-1.347 0-2.189-1.458-1.516-2.625L8.485 2.495zM10 6a.75.75 0 01.75.75v3.5a.75.75 0 01-1.5 0v-3.5A.75.75 0 0110 6zm0 8a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd"/>
+            </svg>
+        </div>
+        <h1 class="text-lg font-bold text-lb-text">Something went wrong</h1>
+        <p class="text-sm text-lb-muted mt-2">An unexpected error occurred on our end. It's been logged, and no changes were saved.</p>
+        <div class="mt-6">
+            <a class="lb-btn lb-btn-primary" href="{{ url_for('main.home') if current_user.is_authenticated else url_for('auth.login') }}">
+                {{ 'Back to dashboard' if current_user.is_authenticated else 'Back to sign in' }}
+            </a>
+        </div>
     </div>
-{% endblock %}
+{% endmacro %}
+{% block content %}{{ body() }}{% endblock %}
+{% block guest_content %}{{ body() }}{% endblock %}

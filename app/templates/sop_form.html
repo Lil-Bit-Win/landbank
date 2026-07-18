@@ -1,29 +1,53 @@
 {% extends "base.html" %}
-{% block title %}{% if mode == 'new' %}Add SOP{% else %}Edit SOP{% endif %}{% endblock %}
+{% block title %}{% if mode == 'new' %}New SOP{% else %}Edit SOP{% endif %} — SOPs{% endblock %}
 {% block content %}
-    <h2>{% if mode == 'new' %}Add New SOP{% else %}Edit SOP{% endif %}</h2>
+    <a href="{{ url_for('sop.sop_list') }}" class="inline-flex items-center gap-1 text-sm text-lb-muted hover:text-lb-text mb-4">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M12.79 5.23a.75.75 0 010 1.06L9.06 10l3.73 3.71a.75.75 0 11-1.06 1.06l-4.25-4.25a.75.75 0 010-1.06l4.25-4.25a.75.75 0 011.06 0z" clip-rule="evenodd"/></svg>
+        Back to SOPs
+    </a>
 
-    <form method="post">
-        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <div class="lb-card p-6 sm:p-8 max-w-2xl">
+        <h1 class="text-xl font-bold text-lb-text mb-6">
+            {% if mode == 'new' %}Add new SOP{% else %}Edit SOP{% endif %}
+        </h1>
+        {% if mode == 'edit' %}
+        <p class="text-xs text-lb-muted -mt-4 mb-6">Saving will increment the version number.</p>
+        {% endif %}
 
-        <label for="title">Title *</label>
-        <input type="text" id="title" name="title" required value="{{ sop.title if sop else '' }}">
+        <form method="post" novalidate>
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
 
-        <label for="purpose">Purpose *</label>
-        <textarea id="purpose" name="purpose" rows="3" required>{{ sop.purpose if sop else '' }}</textarea>
+            <div class="mb-4">
+                <label class="lb-label" for="title">Title <span class="text-lb-danger">*</span></label>
+                <input class="lb-input" type="text" id="title" name="title" required maxlength="200"
+                       value="{{ sop.title if sop else '' }}">
+            </div>
 
-        <label for="scope">Scope *</label>
-        <textarea id="scope" name="scope" rows="3" required>{{ sop.scope if sop else '' }}</textarea>
+            <div class="mb-4">
+                <label class="lb-label" for="purpose">Purpose <span class="text-lb-danger">*</span></label>
+                <textarea class="lb-textarea" id="purpose" name="purpose" rows="3" required maxlength="5000">{{ sop.purpose if sop else '' }}</textarea>
+            </div>
 
-        <label for="procedure">Step-by-step Procedure *</label>
-        <textarea id="procedure" name="procedure" rows="8" required>{{ sop.procedure if sop else '' }}</textarea>
+            <div class="mb-4">
+                <label class="lb-label" for="scope">Scope <span class="text-lb-danger">*</span></label>
+                <textarea class="lb-textarea" id="scope" name="scope" rows="3" required maxlength="5000">{{ sop.scope if sop else '' }}</textarea>
+            </div>
 
-        <label for="responsible_person">Responsible Person *</label>
-        <input type="text" id="responsible_person" name="responsible_person" required value="{{ sop.responsible_person if sop else '' }}">
+            <div class="mb-4">
+                <label class="lb-label" for="procedure">Step-by-step procedure <span class="text-lb-danger">*</span></label>
+                <textarea class="lb-textarea" id="procedure" name="procedure" rows="8" required maxlength="5000">{{ sop.procedure if sop else '' }}</textarea>
+            </div>
 
-        <div class="actions">
-            <button class="btn" type="submit">Save</button>
-            <a class="btn btn-secondary" href="{{ url_for('sop.sop_list') }}">Cancel</a>
-        </div>
-    </form>
+            <div class="mb-2">
+                <label class="lb-label" for="responsible_person">Responsible person <span class="text-lb-danger">*</span></label>
+                <input class="lb-input" type="text" id="responsible_person" name="responsible_person" required maxlength="150"
+                       value="{{ sop.responsible_person if sop else '' }}">
+            </div>
+
+            <div class="flex gap-3 mt-7 pt-6 border-t border-lb-border">
+                <button class="lb-btn lb-btn-primary" type="submit">Save SOP</button>
+                <a class="lb-btn lb-btn-secondary" href="{{ url_for('sop.sop_list') }}">Cancel</a>
+            </div>
+        </form>
+    </div>
 {% endblock %}

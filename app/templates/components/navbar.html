@@ -1,0 +1,72 @@
+{# Top navbar: logo (left), system name, hamburger (mobile), user menu (right) #}
+<header class="sticky top-0 z-20 bg-lb-darker text-white shadow-sm">
+    <div class="flex items-center justify-between h-16 px-4 sm:px-6 lg:px-8">
+        <div class="flex items-center gap-3 min-w-0">
+            <button type="button" onclick="lbToggleSidebar()" aria-label="Toggle navigation menu"
+                    class="lg:hidden -ml-1 mr-1 p-2 rounded-md hover:bg-white/10 shrink-0">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd"/>
+                </svg>
+            </button>
+            <a href="{{ url_for('main.home') }}" class="flex items-center gap-3 min-w-0">
+                <img src="{{ url_for('static', filename='images/landbank-logo.png') }}" alt="LandBank" class="h-8 w-8 rounded-full bg-white p-0.5 shrink-0">
+                <span class="font-semibold tracking-tight text-[15px] sm:text-base truncate">CSU Knowledge Base</span>
+            </a>
+        </div>
+
+        <div class="flex items-center gap-3 sm:gap-4 shrink-0">
+            <a href="{{ url_for('main.search') }}"
+               class="hidden sm:inline-flex items-center gap-1.5 text-sm text-white/85 hover:text-white px-2 py-1.5 rounded-md hover:bg-white/10">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M9 3.5a5.5 5.5 0 100 11 5.5 5.5 0 000-11zM2 9a7 7 0 1112.452 4.391l3.328 3.329a.75.75 0 11-1.06 1.06l-3.329-3.328A7 7 0 012 9z" clip-rule="evenodd"/>
+                </svg>
+                Search
+            </a>
+
+            <div class="relative">
+                <button type="button" onclick="lbToggleUserMenu()" id="lb-user-menu-btn"
+                        class="flex items-center gap-2 text-sm rounded-full pl-1 pr-2 py-1 hover:bg-white/10">
+                    <span class="flex items-center justify-center h-7 w-7 rounded-full bg-lb-green text-white text-xs font-bold uppercase">
+                        {{ current_user.username[:2] }}
+                    </span>
+                    <span class="hidden md:flex flex-col items-start leading-tight">
+                        <span class="font-medium">{{ current_user.username }}</span>
+                        <span class="text-[11px] text-white/70 capitalize">{{ current_user.role }}</span>
+                    </span>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-white/70" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd"/>
+                    </svg>
+                </button>
+                <div id="lb-user-menu"
+                     class="hidden absolute right-0 mt-2 w-52 bg-white text-lb-text rounded-lg shadow-lg border border-lb-border py-1 z-30">
+                    <div class="px-3.5 py-2 border-b border-lb-border">
+                        <p class="text-sm font-semibold truncate">{{ current_user.username }}</p>
+                        <span class="lb-pill {{ 'lb-pill-admin' if current_user.role == 'admin' else 'lb-pill-agent' }} mt-1 capitalize">{{ current_user.role }}</span>
+                    </div>
+                    <a href="{{ url_for('auth.logout') }}" class="flex items-center gap-2 px-3.5 py-2 text-sm hover:bg-lb-bg">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-lb-muted" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M3 4.25A2.25 2.25 0 015.25 2h5.5A2.25 2.25 0 0113 4.25v2a.75.75 0 01-1.5 0v-2a.75.75 0 00-.75-.75h-5.5a.75.75 0 00-.75.75v11.5c0 .414.336.75.75.75h5.5a.75.75 0 00.75-.75v-2a.75.75 0 011.5 0v2A2.25 2.25 0 0110.75 18h-5.5A2.25 2.25 0 013 15.75V4.25z"/>
+                            <path fill-rule="evenodd" d="M6 10a.75.75 0 01.75-.75h9.546l-1.048-.943a.75.75 0 111.004-1.114l2.5 2.25a.75.75 0 010 1.114l-2.5 2.25a.75.75 0 11-1.004-1.114l1.048-.943H6.75A.75.75 0 016 10z"/>
+                        </svg>
+                        Log out
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+<script>
+    function lbToggleUserMenu(force) {
+        const menu = document.getElementById('lb-user-menu');
+        const open = force !== undefined ? force : menu.classList.contains('hidden');
+        menu.classList.toggle('hidden', !open);
+    }
+    document.addEventListener('click', function (e) {
+        const menu = document.getElementById('lb-user-menu');
+        const btn = document.getElementById('lb-user-menu-btn');
+        if (!menu || menu.classList.contains('hidden')) return;
+        if (!menu.contains(e.target) && !btn.contains(e.target)) {
+            lbToggleUserMenu(false);
+        }
+    });
+</script>

@@ -2,140 +2,82 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}CSU Knowledge Base & SOP System{% endblock %}</title>
-    <style>
-        * { box-sizing: border-box; }
-        body {
-            font-family: Arial, Helvetica, sans-serif;
-            margin: 0;
-            background-color: #f4f5f7;
-            color: #222;
+    <link rel="icon" href="{{ url_for('static', filename='images/landbank-logo.png') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        lb: {
+                            green: '#6FB43F',
+                            dark: '#4C8A2C',
+                            darker: '#35611F',
+                            50: '#F1F8EC',
+                            100: '#E2F1D8',
+                            bg: '#F5F7F4',
+                            border: '#E3E8E1',
+                            text: '#232823',
+                            muted: '#64706A',
+                        },
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+                    },
+                },
+            },
         }
-        header {
-            background-color: #1f3a5f;
-            padding: 15px 30px;
-        }
-        header h1 {
-            color: #fff;
-            margin: 0 0 10px 0;
-            font-size: 22px;
-        }
-        nav a {
-            color: #fff;
-            text-decoration: none;
-            margin-right: 20px;
-            font-weight: bold;
-        }
-        nav a:hover { text-decoration: underline; }
-        nav .whoami {
-            color: #cdd6e0;
-            margin-right: 20px;
-            font-size: 13px;
-        }
-        main {
-            max-width: 900px;
-            margin: 20px auto;
-            background: #fff;
-            padding: 25px 30px;
-            border-radius: 6px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 10px;
-        }
-        th, td {
-            border: 1px solid #ddd;
-            padding: 8px 10px;
-            text-align: left;
-            vertical-align: top;
-        }
-        th { background-color: #e9edf2; }
-        tr:hover { background-color: #f9f9f9; }
-        .btn {
-            display: inline-block;
-            padding: 6px 14px;
-            background-color: #1f3a5f;
-            color: #fff;
-            text-decoration: none;
-            border-radius: 4px;
-            border: none;
-            cursor: pointer;
-            font-size: 14px;
-        }
-        .btn:hover { background-color: #16273f; }
-        .btn-danger { background-color: #b3372c; }
-        .btn-danger:hover { background-color: #8f2b22; }
-        .btn-secondary { background-color: #666; }
-        form.inline { display: inline; }
-        label { display: block; margin-top: 12px; font-weight: bold; }
-        input[type=text], input[type=password], select, textarea {
-            width: 100%;
-            padding: 8px;
-            margin-top: 4px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            font-family: inherit;
-            font-size: 14px;
-        }
-        textarea { resize: vertical; }
-        .actions { margin-top: 20px; }
-        .flash {
-            background-color: #fff3cd;
-            border: 1px solid #ffe58f;
-            padding: 10px 14px;
-            border-radius: 4px;
-            margin-bottom: 15px;
-        }
-        .meta { color: #666; font-size: 13px; margin-bottom: 15px; }
-        .tag {
-            display: inline-block;
-            background: #e0e6ed;
-            border-radius: 3px;
-            padding: 2px 8px;
-            margin: 2px;
-            font-size: 12px;
-        }
-        .section-block { margin-bottom: 18px; }
-        .section-block h3 { margin-bottom: 4px; color: #1f3a5f; }
-        pre.procedure {
-            white-space: pre-wrap;
-            font-family: inherit;
-            background: #f7f8fa;
-            padding: 12px;
-            border-radius: 4px;
-            border: 1px solid #e0e0e0;
-        }
-        .search-box { display: flex; gap: 10px; }
-        .search-box input[type=text] { flex: 1; }
-    </style>
+    </script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/app.css') }}">
+    {% block extra_head %}{% endblock %}
 </head>
-<body>
-    <header>
-        <h1>CSU Knowledge Base & SOP Management System</h1>
-        <nav>
-            {% if current_user.is_authenticated %}
-                <a href="{{ url_for('main.home') }}">Home</a>
-                <a href="{{ url_for('kb.kb_list') }}">Knowledge Base</a>
-                <a href="{{ url_for('sop.sop_list') }}">SOPs</a>
-                <a href="{{ url_for('main.search') }}">Search</a>
-                <span class="whoami">{{ current_user.username }} ({{ current_user.role }})</span>
-                <a href="{{ url_for('auth.logout') }}">Logout</a>
-            {% else %}
-                <a href="{{ url_for('auth.login') }}">Login</a>
-            {% endif %}
-        </nav>
-    </header>
-    <main>
-        {% with messages = get_flashed_messages() %}
-            {% if messages %}
-                {% for message in messages %}
-                    <div class="flash">{{ message }}</div>
-                {% endfor %}
-            {% endif %}
-        {% endwith %}
-        {% block content %}{% endblock %}
-    </main>
+<body class="font-sans bg-lb-bg text-lb-text min-h-screen">
+
+{% if current_user.is_authenticated %}
+    {# ---------------- Authenticated app shell: navbar + sidebar ---------------- #}
+    <div id="lb-sidebar-backdrop" onclick="lbToggleSidebar(false)"></div>
+    {% include "components/navbar.html" %}
+
+    <div class="flex">
+        {% include "components/sidebar.html" %}
+
+        <main class="flex-1 min-w-0 px-4 py-6 sm:px-6 lg:px-8 lg:py-8 max-w-6xl mx-auto w-full">
+            {% include "components/alerts.html" %}
+            {% block content %}{% endblock %}
+        </main>
+    </div>
+
+    <script>
+        function lbToggleSidebar(force) {
+            const sidebar = document.getElementById('lb-sidebar');
+            const backdrop = document.getElementById('lb-sidebar-backdrop');
+            const open = force !== undefined ? force : !sidebar.classList.contains('lb-open');
+            sidebar.classList.toggle('lb-open', open);
+            backdrop.classList.toggle('lb-open', open);
+        }
+    </script>
+{% else %}
+    {# ---------------- Logged-out shell: centered, no navigation chrome ---------------- #}
+    <div class="min-h-screen flex flex-col">
+        <header class="py-8 flex justify-center">
+            <img src="{{ url_for('static', filename='images/landbank-logo.png') }}" alt="LandBank" class="h-12 w-auto">
+        </header>
+        <main class="flex-1 flex items-start sm:items-center justify-center px-4 pb-12">
+            <div class="w-full max-w-md">
+                {% include "components/alerts.html" %}
+                {% block guest_content %}{% endblock %}
+            </div>
+        </main>
+        <footer class="text-center text-xs text-lb-muted pb-6">
+            CSU Knowledge Base &amp; SOP System
+        </footer>
+    </div>
+{% endif %}
+
+{% block scripts %}{% endblock %}
 </body>
 </html>
