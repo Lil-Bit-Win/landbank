@@ -73,8 +73,8 @@ def validate_kb_input(data):
     if _check_required(title, "Title", errors):
         _check_max_length(title, "Title", MAX_TITLE_LEN, errors)
 
-    if _check_required(purpose, "Description", errors):
-        _check_max_length(purpose, "Description", MAX_TEXT_LEN, errors)
+    if _check_required(description, "Description", errors):
+        _check_max_length(description, "Description", MAX_TEXT_LEN, errors)
 
     _check_required(category, "Category", errors)
 
@@ -94,7 +94,7 @@ def validate_sop_input(data):
     errors = []
 
     title = sanitize_text(data.get("title"))
-    description = description = sanitize_text(data.get("description"))
+    description = sanitize_text(data.get("description"))
     purpose = sanitize_text(data.get("purpose"))
     scope = sanitize_text(data.get("scope"))
     procedure = sanitize_text(data.get("procedure"))
@@ -103,8 +103,8 @@ def validate_sop_input(data):
     if _check_required(title, "Title", errors):
         _check_max_length(title, "Title", MAX_TITLE_LEN, errors)
 
-     if _check_required(purpose, "Description", errors):
-        _check_max_length(purpose, "Description", MAX_TEXT_LEN, errors)
+     if _check_required(description, "Description", errors):
+        _check_max_length(description, "Description", MAX_TEXT_LEN, errors)
 
     if _check_required(purpose, "Purpose", errors):
         _check_max_length(purpose, "Purpose", MAX_TEXT_LEN, errors)
