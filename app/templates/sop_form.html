@@ -24,6 +24,11 @@
             </div>
 
             <div class="mb-4">
+                <label class="lb-label" for="decription">Title Description <span class="text-lb-danger">*</span></label>
+                <textarea class="lb-textarea" id="description" name="description" rows="3" required maxlength="5000">{{ sop.description if sop else '' }}</textarea>
+            </div>
+
+            <div class="mb-4">
                 <label class="lb-label" for="purpose">Purpose <span class="text-lb-danger">*</span></label>
                 <textarea class="lb-textarea" id="purpose" name="purpose" rows="3" required maxlength="5000">{{ sop.purpose if sop else '' }}</textarea>
             </div>
