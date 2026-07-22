@@ -17,6 +17,11 @@
             {% if sop.author %} by {{ sop.author.username }}{% endif %}
         </p>
 
+         <div class="mb-6">
+            <h2 class="text-sm font-semibold text-lb-darker mb-2">Title Description</h2>
+            <p class="text-sm leading-relaxed whitespace-pre-wrap">{{ sop.descritpion }}</p>
+        </div>
+
         <div class="mb-6">
             <h2 class="text-sm font-semibold text-lb-darker mb-2">Purpose</h2>
             <p class="text-sm leading-relaxed whitespace-pre-wrap">{{ sop.purpose }}</p>
