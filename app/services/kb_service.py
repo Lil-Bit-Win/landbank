@@ -48,6 +48,7 @@ def get_kb(article_id, include_deleted=False):
 def create_kb(data, user_id=None):
     article = KnowledgeBase(
         title=sanitize_text(data.get("title")),
+        description=sanitize_text(data.get("description")),
         category=sanitize_text(data.get("category")),
         problem=sanitize_text(data.get("problem")),
         solution=sanitize_text(data.get("solution")),
@@ -61,6 +62,7 @@ def create_kb(data, user_id=None):
 
 def update_kb(article, data):
     article.title = sanitize_text(data.get("title"))
+    article.description = sanitize_text(data.get("description"))
     article.category = sanitize_text(data.get("category"))
     article.problem = sanitize_text(data.get("problem"))
     article.solution = sanitize_text(data.get("solution"))
@@ -89,6 +91,7 @@ def search_kb(query):
             KnowledgeBase.is_deleted.is_(False),
             db.or_(
                 KnowledgeBase.title.ilike(like),
+                KnowledgeBase.description.ilike(like),
                 KnowledgeBase.problem.ilike(like),
                 KnowledgeBase.solution.ilike(like),
                 KnowledgeBase.tags.ilike(like),
