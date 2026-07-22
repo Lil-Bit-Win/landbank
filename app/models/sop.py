@@ -13,6 +13,7 @@ class SOP(db.Model):
     # the same pattern and rationale.
     public_id = db.Column(db.String(36), unique=True, nullable=True, default=lambda: str(uuid.uuid4()))
     title = db.Column(db.String(200), nullable=False)
+    description = db.Column(db.Text, nullable=False)
     purpose = db.Column(db.Text, nullable=False)
     scope = db.Column(db.Text, nullable=False)
     procedure = db.Column(db.Text, nullable=False)
@@ -33,6 +34,7 @@ class SOP(db.Model):
             "id": self.id,
             "public_id": self.public_id,
             "title": self.title,
+            "description":self.description,
             "purpose": self.purpose,
             "scope": self.scope,
             "procedure": self.procedure,
