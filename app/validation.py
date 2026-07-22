@@ -103,7 +103,7 @@ def validate_sop_input(data):
     if _check_required(title, "Title", errors):
         _check_max_length(title, "Title", MAX_TITLE_LEN, errors)
 
-     if _check_required(description, "Description", errors):
+    if _check_required(description, "Description", errors):
         _check_max_length(description, "Description", MAX_TEXT_LEN, errors)
 
     if _check_required(purpose, "Purpose", errors):
