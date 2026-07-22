@@ -31,6 +31,7 @@ def get_sop(sop_id, include_deleted=False):
 def create_sop(data, user_id=None):
     sop = SOP(
         title=sanitize_text(data.get("title")),
+        description=sanitize_text(data.get("description")),
         purpose=sanitize_text(data.get("purpose")),
         scope=sanitize_text(data.get("scope")),
         procedure=sanitize_text(data.get("procedure")),
@@ -44,6 +45,7 @@ def create_sop(data, user_id=None):
 
 def update_sop(sop, data):
     sop.title = sanitize_text(data.get("title"))
+    sop.description = sanitize_text(data.get("description"))
     sop.purpose = sanitize_text(data.get("purpose"))
     sop.scope = sanitize_text(data.get("scope"))
     sop.procedure = sanitize_text(data.get("procedure"))
@@ -67,6 +69,7 @@ def search_sop(query):
             SOP.is_deleted.is_(False),
             db.or_(
                 SOP.title.ilike(like),
+                SOP.description.ilike(like),
                 SOP.purpose.ilike(like),
                 SOP.scope.ilike(like),
                 SOP.procedure.ilike(like),
