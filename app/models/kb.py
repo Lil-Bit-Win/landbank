@@ -14,6 +14,7 @@ class KnowledgeBase(db.Model):
     # for any client that prefers not to expose sequential integers.
     public_id = db.Column(db.String(36), unique=True, nullable=True, default=lambda: str(uuid.uuid4()))
     title = db.Column(db.String(200), nullable=False)
+    description = db.Column(db.Text, nullable=False)
     category = db.Column(db.String(50), nullable=False)
     problem = db.Column(db.Text, nullable=False)
     solution = db.Column(db.Text, nullable=False)
@@ -36,6 +37,7 @@ class KnowledgeBase(db.Model):
             "id": self.id,
             "public_id": self.public_id,
             "title": self.title,
+            "description":self.description,
             "category": self.category,
             "problem": self.problem,
             "solution": self.solution,
