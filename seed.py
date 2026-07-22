@@ -45,6 +45,7 @@ with app.app_context():
         kb_examples = [
             KnowledgeBase(
                 title="No Dial Tone on Analog Telephone Line",
+                description = "None",
                 category="Telephone",
                 problem=(
                     "Subscriber reports no dial tone on their analog telephone line. "
@@ -63,6 +64,7 @@ with app.app_context():
             ),
             KnowledgeBase(
                 title="Intermittent Internet Connection via DSL Router",
+                description = "None",
                 category="Router",
                 problem="Customer reports internet connection drops every few minutes on a DSL router setup.",
                 solution=(
@@ -83,6 +85,7 @@ with app.app_context():
         sop_examples = [
             SOP(
                 title="Handling Customer Line Trouble Reports",
+                description = "None",
                 purpose=(
                     "To standardize the process of receiving, diagnosing, and resolving "
                     "customer-reported line trouble to ensure consistent service quality."
@@ -104,6 +107,7 @@ with app.app_context():
             ),
             SOP(
                 title="Router Configuration Backup and Restore",
+                description = "None",
                 purpose=(
                     "To ensure router configurations are properly backed up before changes "
                     "and can be restored quickly in case of failure."
