@@ -34,7 +34,7 @@ class SOP(db.Model):
             "id": self.id,
             "public_id": self.public_id,
             "title": self.title,
-            "description":self.description,
+            "description": self.description,
             "purpose": self.purpose,
             "scope": self.scope,
             "procedure": self.procedure,
