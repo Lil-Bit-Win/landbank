@@ -37,7 +37,7 @@ class KnowledgeBase(db.Model):
             "id": self.id,
             "public_id": self.public_id,
             "title": self.title,
-            "description":self.description,
+            "description": self.description,
             "category": self.category,
             "problem": self.problem,
             "solution": self.solution,
